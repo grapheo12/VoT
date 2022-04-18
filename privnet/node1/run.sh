@@ -1,0 +1,1 @@
+geth --nousb --datadir=$pwd --syncmode 'full' --port 30311 --miner.gasprice 0 --miner.gastarget 470000000000 --http --http.addr 'localhost' --http.port 8546 --http.api admin,eth,miner,net,txpool,personal,web3 --mine --allow-insecure-unlock --unlock "0xbaF91FfE5859528817a48F6aD9E1Ccc5De25d14b" --password password.txt

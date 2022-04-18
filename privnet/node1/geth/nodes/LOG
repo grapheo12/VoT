@@ -1,0 +1,69 @@
+=============== Apr 18, 2022 (IST) ===============
+18:24:07.630852 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+18:24:07.637365 db@open opening
+18:24:07.640655 version@stat F·[] S·0B[] Sc·[]
+18:24:07.643752 db@janitor F·2 G·0
+18:24:07.643769 db@open done T·6.391284ms
+=============== Apr 18, 2022 (IST) ===============
+18:24:29.105747 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+18:24:29.106012 version@stat F·[] S·0B[] Sc·[]
+18:24:29.106085 db@open opening
+18:24:29.106220 journal@recovery F·1
+18:24:29.109149 journal@recovery recovering @1
+18:24:29.111041 memdb@flush created L0@2 N·15 S·570B "loc..seq,v2":"version,v1"
+18:24:29.113535 version@stat F·[1] S·570B[570B] Sc·[0.25]
+18:24:29.122136 db@janitor F·3 G·0
+18:24:29.122165 db@open done T·16.051283ms
+18:48:05.371299 db@close closing
+18:48:05.371467 db@close done T·163.224µs
+=============== Apr 18, 2022 (IST) ===============
+18:48:08.181893 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+18:48:08.182139 version@stat F·[1] S·570B[570B] Sc·[0.25]
+18:48:08.182196 db@open opening
+18:48:08.182295 journal@recovery F·1
+18:48:08.183054 journal@recovery recovering @3
+18:48:08.205612 memdb@flush created L0@5 N·6510 S·105KiB "loc..seq,v57":"n:\xff..ong,v341"
+18:48:08.206080 version@stat F·[2] S·106KiB[106KiB] Sc·[0.50]
+18:48:08.215083 db@janitor F·4 G·0
+18:48:08.215107 db@open done T·32.89016ms
+18:48:08.217961 table@compaction L0·2 -> L1·0 S·106KiB Q·6528
+18:48:08.225958 table@build created L1@8 N·821 S·34KiB "loc..seq,v57":"version,v1"
+18:48:08.226085 version@stat F·[0 1] S·34KiB[0B 34KiB] Sc·[0.00 0.00]
+18:48:08.229547 table@compaction committed F-1 S-71KiB Ke·0 D·5704 T·11.507905ms
+18:48:08.230052 table@remove removed @2
+18:48:30.646505 db@close closing
+18:48:30.646612 db@close done T·116.628µs
+=============== Apr 18, 2022 (IST) ===============
+18:48:36.776245 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+18:48:36.776357 version@stat F·[0 1] S·34KiB[0B 34KiB] Sc·[0.00 0.00]
+18:48:36.776378 db@open opening
+18:48:36.776421 journal@recovery F·1
+18:48:36.797194 journal@recovery recovering @6
+18:48:36.799701 memdb@flush created L0@9 N·85 S·3KiB "loc..seq,v6566":"n:\xd6..ong,v6549"
+18:48:36.801837 version@stat F·[1 1] S·38KiB[3KiB 34KiB] Sc·[0.25 0.00]
+18:48:36.811661 db@janitor F·5 G·1
+18:48:36.811679 db@janitor removing table-5
+18:48:36.811746 db@open done T·35.35957ms
+18:48:36.815352 table@compaction L0·1 -> L1·1 S·38KiB Q·6614
+18:48:36.822744 table@build created L1@12 N·887 S·36KiB "loc..seq,v6566":"version,v1"
+18:48:36.822862 version@stat F·[0 1] S·36KiB[0B 36KiB] Sc·[0.00 0.00]
+18:48:36.826984 table@compaction committed F-1 S-1KiB Ke·0 D·19 T·11.565905ms
+18:48:36.827412 table@remove removed @8
+18:51:05.076728 db@close closing
+18:51:05.076867 db@close done T·139.681µs
+=============== Apr 18, 2022 (IST) ===============
+18:51:27.831474 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+18:51:27.831624 version@stat F·[0 1] S·36KiB[0B 36KiB] Sc·[0.00 0.00]
+18:51:27.831650 db@open opening
+18:51:27.831710 journal@recovery F·1
+18:51:27.832439 journal@recovery recovering @10
+18:51:27.842501 memdb@flush created L0@13 N·207 S·7KiB "loc..seq,v6648":"n:\xfd..ing,v6757"
+18:51:27.843365 version@stat F·[1 1] S·44KiB[7KiB 36KiB] Sc·[0.25 0.00]
+18:51:27.851821 db@janitor F·5 G·1
+18:51:27.851838 db@janitor removing table-9
+18:51:27.851899 db@open done T·20.23798ms
+18:51:27.855897 table@compaction L0·1 -> L1·1 S·44KiB Q·6822
+18:51:27.861999 table@build created L1@16 N·1073 S·43KiB "loc..seq,v6648":"version,v1"
+18:51:27.862071 version@stat F·[0 1] S·43KiB[0B 43KiB] Sc·[0.00 0.00]
+18:51:27.866157 table@compaction committed F-1 S-563B Ke·0 D·21 T·10.208755ms
+18:51:27.866403 table@remove removed @12
