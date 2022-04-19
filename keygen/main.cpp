@@ -63,7 +63,6 @@ void createPuzzle()
     BN_mod_exp(x2t, x, twoPowerT, N, ctx4);
     std::cout << "x^2^T = " << BN_bn2dec(x2t) << std::endl;
 
-
 }
 
 int main(int argc, char *argv[])
