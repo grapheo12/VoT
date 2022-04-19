@@ -1,5 +1,6 @@
 wallet.txt
 *.ipc
+keygen/main
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
