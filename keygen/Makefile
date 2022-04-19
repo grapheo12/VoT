@@ -3,11 +3,10 @@ TFHE_OPTIONS = C_INCLUDE_PATH=$$C_INCLUDE_PATH:${TFHE_PREFIX}/include CPLUS_INCL
 TFHE_LIB = -ltfhe-spqlios-fma
 BLAS_LIB = -lopenblas
 
-
-main: main.cpp
-	${TFHE_OPTIONS} g++ -g main.cpp -o main -lthfhe ${TFHE_LIB} ${BLAS_LIB}
-
+bin/main: main.cpp
+	mkdir -p bin
+	${TFHE_OPTIONS} g++ -g main.cpp -o bin/main -lthfhe -lcrypto -lssl ${TFHE_LIB} ${BLAS_LIB}
 
 .PHONY: clean
 clean:
-	rm -rf main
+	rm -rf bin
