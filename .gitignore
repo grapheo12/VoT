@@ -8,6 +8,7 @@ keygen/share*.json
 vote.txt
 *.vote
 casting/db/
+ipfs/compose/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
