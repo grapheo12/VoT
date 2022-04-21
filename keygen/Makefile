@@ -9,4 +9,4 @@ bin/main: main.cpp
 
 .PHONY: clean
 clean:
-	rm -rf bin
+	rm -rf bin share* *.key test*

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <openssl/bn.h>
 #include <openssl/evp.h>
+#include <cstdio>
 
 
 void exportPK(std::string fpath, ThFHEPubKey *key)
@@ -202,9 +203,11 @@ int main(int argc, char *argv[])
     // result = finalDecrypt(cipher, part, tparams, {1, 2}, 2, 3);
     // std::cout << result << std::endl;
 
-    exportTimeLockPuzzle(&shares[0], 96, "share0.json");
-    exportTimeLockPuzzle(&shares[1], 96, "share1.json");
-    exportTimeLockPuzzle(&shares[2], 96, "share2.json");
+    char name[1000];
+    for (int i = 1; i <= T; i++){
+        sprintf(name, "share%d.json", i);
+        exportTimeLockPuzzle(&shares[i-1], 96, name);
+    }
 
     return 0;
 }
