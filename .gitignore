@@ -1,6 +1,10 @@
 wallet.txt
 *.ipc
-keygen/main
+keygen/bin/
+*.key
+.vscode
+keygen/test.*
+keygen/share*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
