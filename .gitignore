@@ -1,10 +1,13 @@
 wallet.txt
 *.ipc
-keygen/bin/
+*/bin/
 *.key
 .vscode
 keygen/test.*
 keygen/share*.json
+vote.txt
+*.vote
+casting/db/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
