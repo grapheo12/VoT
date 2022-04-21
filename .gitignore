@@ -9,6 +9,7 @@ vote.txt
 *.vote
 casting/db/
 ipfs/compose/
+# privnet/node*/geth/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

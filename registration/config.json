@@ -1,7 +1,59 @@
 {
     "ipcPath": "../privnet/node0/geth.ipc",
-    "voterContract": "0x684774dcD98B00052d56755D96BB01b1CB7809E5",
+    "voterContract": "0x80c8cD353C18Ef498F93fFA552ab6737623Af237",
     "voterAbi": [
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "addr",
+                    "type": "address"
+                }
+            ],
+            "name": "registerGenerator",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "key",
+                    "type": "address"
+                }
+            ],
+            "name": "registerVoter",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "vs",
+                    "type": "address"
+                }
+            ],
+            "name": "registerVoteSubmitter",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "key",
+                    "type": "address"
+                }
+            ],
+            "name": "removeVoter",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
         {
             "inputs": [],
             "stateMutability": "nonpayable",
@@ -23,9 +75,9 @@
         {
             "inputs": [
                 {
-                    "internalType": "bytes",
+                    "internalType": "address",
                     "name": "key",
-                    "type": "bytes"
+                    "type": "address"
                 }
             ],
             "name": "isVoter",
@@ -56,58 +108,6 @@
                 }
             ],
             "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "addr",
-                    "type": "address"
-                }
-            ],
-            "name": "registerGenerator",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "vs",
-                    "type": "address"
-                }
-            ],
-            "name": "registerVoteSubmitter",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "bytes",
-                    "name": "key",
-                    "type": "bytes"
-                }
-            ],
-            "name": "registerVoter",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "bytes",
-                    "name": "key",
-                    "type": "bytes"
-                }
-            ],
-            "name": "removeVoter",
-            "outputs": [],
-            "stateMutability": "nonpayable",
             "type": "function"
         },
         {

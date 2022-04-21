@@ -1,12 +1,11 @@
 import asyncio
-import base64
 import json
 import random
 from aiohttp import web
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-from cryptography.hazmat.primitives import serialization
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
+import secrets
+from eth_account import Account
 
 config = json.load(open("config.json", "r"))
 w3 = Web3(Web3.IPCProvider(config["ipcPath"]))
@@ -24,8 +23,12 @@ MAX_SIZE = 10
 
 def gen_key():
     print("Generating Keys")
-    priv_key = Ed25519PrivateKey.generate()
-    pub_key = priv_key.public_key()
+    # priv_key = Ed25519PrivateKey.generate()
+    # pub_key = priv_key.public_key()
+
+    priv_key = "0x" + secrets.token_hex(32)
+    ac = Account.from_key(priv_key)
+    pub_key = ac.address
 
     return priv_key, pub_key
 
@@ -52,11 +55,9 @@ async def clientHandler(request):
             random_insert(pub_key)
 
             keys = f"""#----------- PRIVATE KEY -------#
-{base64.b64encode(priv_key.private_bytes(encoding=serialization.Encoding.Raw,
-format=serialization.PrivateFormat.Raw,
-encryption_algorithm=serialization.NoEncryption()))}
+{priv_key}
 #----------- PUBLIC KEY  -------#
-{base64.b64encode(pub_key.public_bytes(encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw))}"""
+{pub_key}"""
             resp = web.Response(status=200, text=keys)
 
 
@@ -81,12 +82,15 @@ async def writeToLedger(keys):
     print(f"Dispatching {len(keys)} keys:")
 
     for k in keys:
-        kb = k.public_bytes(encoding=serialization.Encoding.Raw,
-                            format=serialization.PublicFormat.Raw)
-        ret = contract.functions.registerVoter(kb).transact({
+        w3.eth.send_transaction({
+            "to": k,
+            "from": txFrom,
+            "value": int(100e+9)
+        })
+        ret = contract.functions.registerVoter(k).transact({
             "from": txFrom
         })
-        print("Key:", base64.b64encode(kb), "Return:", ret)
+        print("Key:", k, "Return:", ret)
     
 async def keyDispatch():
     global LCK, MAX_SIZE, PUB_KEYS
