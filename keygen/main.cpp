@@ -12,6 +12,8 @@ void exportPK(std::string fpath, ThFHEPubKey *key)
 {
     std::ofstream dump(fpath);
     dump << key->n_samples << std::endl;
+    dump << key->n << std::endl;
+    dump << key->alpha << std::endl;
 
     for (int i = 0; i < key->n_samples; i++){
         for (int j = 0; j < key->n; j++){
