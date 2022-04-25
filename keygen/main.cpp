@@ -49,13 +49,25 @@ void exportTimeLockPuzzle(ThFHEKeyShare *share, int tbit, const std::string fpat
     BN_CTX *ctx5 = BN_CTX_new();
 
 
-    BN_rand(p, 1024, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
-    BN_rand(q, 768, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
-    BN_rand(x, 1024, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
+    // BN_rand(p, 1024, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
+    // BN_rand(q, 768, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
+    BN_generate_prime_ex(p, 1024, true, NULL, NULL, NULL);
+    BN_generate_prime_ex(q, 768, true, NULL, NULL, NULL);
+
     BN_rand(T, tbit, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
     BN_rand(aes_key, 256, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY);
 
     BN_mul(N, p, q, ctx1);
+    while (true){
+        BN_rand(x, 1024, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
+        BN_CTX *__ctx = BN_CTX_new();
+        auto res = BN_mod_inverse(NULL, x, N, __ctx);
+        BN_CTX_free(__ctx);
+        if (res){
+            break;
+        }
+    }
+
     BN_sub(pm1, p, BN_value_one());
     BN_sub(qm1, q, BN_value_one());
     BN_mul(phiN, pm1, qm1, ctx2);
@@ -183,7 +195,7 @@ int main(int argc, char *argv[])
         genKey->GetShareSet(i+1, &shares[i]);
     }
 
-    exportPK("pk.key", genKey->pk);
+    exportPK("keys/pk.key", genKey->pk);
 
     // auto params = initialize_gate_bootstrapping_params();
     // auto tparams = new_TLweParams(params->in_out_params->n, 1, params->in_out_params->alpha_min, params->in_out_params->alpha_max);
@@ -207,8 +219,8 @@ int main(int argc, char *argv[])
 
     char name[1000];
     for (int i = 1; i <= T; i++){
-        sprintf(name, "share%d.json", i);
-        exportTimeLockPuzzle(&shares[i-1], 96, name);
+        sprintf(name, "keys/share%d.json", i);
+        exportTimeLockPuzzle(&shares[i-1], 10, name);
     }
 
     return 0;

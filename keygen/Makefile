@@ -5,8 +5,10 @@ BLAS_LIB = -lopenblas
 
 bin/main: main.cpp
 	mkdir -p bin
+	mkdir -p keys
 	${TFHE_OPTIONS} g++ -g main.cpp -o bin/main -lthfhe -lcrypto -lssl ${TFHE_LIB} ${BLAS_LIB}
+
 
 .PHONY: clean
 clean:
-	rm -rf bin share* *.key test*
+	rm -rf bin keys/ share* *.key test*

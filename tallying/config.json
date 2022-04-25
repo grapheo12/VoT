@@ -1,0 +1,50 @@
+{
+    "ipcPath": "../privnet/node1/geth.ipc",
+    "casterContract": "0x49b72a51D924aD503e67F005533CbD8f8908f5d6",
+    "n_candidates": 5,
+    "casterAbi": [
+        {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "cid",
+                    "type": "string"
+                }
+            ],
+            "name": "castVote",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "va",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "votes",
+            "outputs": [
+                {
+                    "internalType": "string",
+                    "name": "",
+                    "type": "string"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ]
+}

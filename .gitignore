@@ -5,11 +5,14 @@ wallet.txt
 .vscode
 keygen/test.*
 keygen/share*.json
+keygen/keys/
 vote.txt
 *.vote
 casting/db/
 ipfs/compose/
 # privnet/node*/geth/
+tallying/dump/
+revealing/keys/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
