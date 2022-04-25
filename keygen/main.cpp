@@ -112,7 +112,7 @@ void exportTimeLockPuzzle(ThFHEKeyShare *share, int tbit, const std::string fpat
             int len = 0;
             int cp_len;
             EVP_EncryptUpdate(cipher_ctx, ciphertext, &len,
-                                (unsigned char *)(kv.second->key[0].coefs), sizeof(int32_t) * kv.second->key->N);
+                                (unsigned char *)(kv.second->key[j].coefs), sizeof(int32_t) * kv.second->key->N);
             cp_len = len;
             EVP_EncryptFinal_ex(cipher_ctx, ciphertext + len, &len);
             cp_len += len;

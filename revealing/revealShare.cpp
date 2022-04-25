@@ -1,5 +1,7 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
+#include <cstring>
 #include <rapidjson/writer.h>
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
@@ -58,6 +60,55 @@ void getAESKey(const char *_N, const char *_T, const char *_x, const char *_x2Tk
     BN_CTX_free(ctx4);
 }
 
+void decryptKeyShare(rj::Document& key, unsigned char *aes_key_bytes)
+{
+    unsigned char dkey[32];
+    unsigned char iv[16];
+
+    EVP_BytesToKey(EVP_aes_256_cbc(), EVP_sha512(), NULL,
+                    aes_key_bytes, 32, 1, dkey, iv);
+
+    auto& alloc = key.GetAllocator();
+    auto cipher = key["cipher"].GetArray();
+    for (auto& x : cipher){
+        auto keys = x["key"].GetArray();
+        rj::Value objValue;
+        objValue.SetArray();
+        for (auto& y : keys){
+            auto enc = y.GetString();
+            unsigned char *c = new unsigned char[strlen(enc)];
+            int cp_len = EVP_DecodeBlock(c, (const unsigned char *)enc, strlen(enc));
+            
+            unsigned char dmsg[5000];
+            int len = 0, plen = 0;
+
+            EVP_CIPHER_CTX *dctx = EVP_CIPHER_CTX_new();
+            EVP_DecryptInit_ex(dctx, EVP_aes_256_cbc(), NULL, dkey, iv);
+            EVP_DecryptUpdate(dctx, dmsg, &len, c, cp_len);
+            plen += len;
+            EVP_DecryptFinal_ex(dctx, dmsg + len, &len);
+            plen += len;
+            dmsg[plen] = '\0';
+            int32_t *coefs = (int32_t *)dmsg;      
+            
+            rj::Value uArr;
+            uArr.SetArray();
+
+            for (int k = 0; k < 1024; k++){
+                uArr.PushBack(coefs[k], alloc);
+            }
+
+            EVP_CIPHER_CTX_free(dctx);
+            delete c;
+
+            objValue.PushBack(uArr, alloc);
+
+        }
+        x.AddMember("unlocked_key", objValue, alloc);
+        x.RemoveMember("key");
+    }
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -80,6 +131,19 @@ int main(int argc, char *argv[])
 
     unsigned char aes_key_bytes[32];
     getAESKey(N, T, x, x2Tk, aes_key_bytes);
+
+    decryptKeyShare(keyDoc, aes_key_bytes);
+    keyDoc.RemoveMember("N");
+    keyDoc.RemoveMember("T");
+    keyDoc.RemoveMember("x");
+    keyDoc.RemoveMember("x2Tk");
+
+
+    rj::StringBuffer buffer;
+    rj::Writer<rj::StringBuffer> writer(buffer);
+    keyDoc["cipher"].Accept(writer);
+
+    std::cout << std::setw(4) << buffer.GetString() << std::endl;
 
     fclose(fp);
     return 0;

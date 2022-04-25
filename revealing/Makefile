@@ -12,3 +12,11 @@ bin/revealShare: revealShare.cpp
 .PHONY: clean
 clean:
 	rm -rf bin keys/ share* *.key test*
+
+.PHONY: unlock
+unlock: bin/revealShare
+	./bin/revealShare ../keygen/keys/share1.json > keys/share1.json
+	./bin/revealShare ../keygen/keys/share2.json > keys/share2.json
+	./bin/revealShare ../keygen/keys/share3.json > keys/share3.json
+	./bin/revealShare ../keygen/keys/share4.json > keys/share4.json
+	./bin/revealShare ../keygen/keys/share5.json > keys/share5.json
