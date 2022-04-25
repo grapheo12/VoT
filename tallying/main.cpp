@@ -34,7 +34,22 @@ std::vector<LweSample *>* parseVote(std::string path)
     return arr;
 }
 
-
+void addVote(std::vector<LweSample *> *acc, std::vector<LweSample *> *vote, const LweParams *params, bool new_acc)
+{
+    // TODO: Actual Adder circuit
+    if (new_acc){
+        for (int i = 0; i < vote->size(); i++){
+            LweSample *sample = (*vote)[i];
+            LweSample *accSample = new_LweSample(params);
+            for (int j = 0; j < params->n; j++){
+                accSample->a[j] = sample->a[j];
+            }
+            accSample->b = sample->b;
+            accSample->current_variance = 1e-28;
+            acc->push_back(accSample);
+        }
+    }
+}
 
 
 int main(int argc, char *argv[])
@@ -44,13 +59,32 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
+    auto params = initialize_gate_bootstrapping_params();
+    std::vector<LweSample *> *accumulator = NULL;
+    
+
     std::string path(argv[1]);
     for (const auto& entry : std::filesystem::directory_iterator(path)){
-        std::cout << std::string(entry.path()) << " ";
         auto arr = parseVote(std::string(entry.path()));
-        std::cout << arr->size() << std::endl;
-
+        if (!accumulator){
+            accumulator = new std::vector<LweSample *>(0);
+            addVote(accumulator, arr, params->in_out_params, true);
+        }else{
+            addVote(accumulator, arr, params->in_out_params, false);
+        }
     }
+
+    std::cout << accumulator->size() << std::endl;
+    std::cout << params->in_out_params->n << std::endl;
+
+    for (int i = 0; i < accumulator->size(); i++){
+        for (int j = 0; j < params->in_out_params->n; j++){
+            std::cout << (int)((*accumulator)[i]->a[j]) << " ";
+        }
+        std::cout << std::endl;
+        std::cout << (int)((*accumulator)[i]->b) << std::endl;
+    }
+
     
     return 0;
 }

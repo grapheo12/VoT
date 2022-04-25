@@ -11,7 +11,7 @@ bin/revealShare: revealShare.cpp
 
 .PHONY: clean
 clean:
-	rm -rf bin keys/ share* *.key test*
+	rm -rf bin keys/ share* *.key test* ciphers/
 
 .PHONY: unlock
 unlock: bin/revealShare

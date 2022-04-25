@@ -12,7 +12,9 @@ casting/db/
 ipfs/compose/
 # privnet/node*/geth/
 tallying/dump/
+tallying/result.vote
 revealing/keys/
+revealing/ciphers/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

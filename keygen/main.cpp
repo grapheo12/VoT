@@ -155,27 +155,6 @@ void exportTimeLockPuzzle(ThFHEKeyShare *share, int tbit, const std::string fpat
     BN_free(x2tk);
     BN_free(aes_key);
 
-
-    // DECRYPT PART
-    // EVP_CIPHER_CTX *dctx;
-    // unsigned char dkey[32];
-    // unsigned char div[16];
-    // unsigned char dmsg[1000];
-
-    // EVP_BytesToKey(EVP_aes_256_cbc(), EVP_sha512(), NULL,
-    //                 aes_key_byte, 32, 1, dkey, div);
-    
-    // dctx = EVP_CIPHER_CTX_new();
-    // EVP_DecryptInit_ex(dctx, EVP_aes_256_cbc(), NULL, dkey, div);
-    // int plen = 0;
-    // EVP_DecryptUpdate(dctx, dmsg, &len, ciphertext, cp_len);
-    // plen += len;
-
-    // EVP_DecryptFinal_ex(dctx, dmsg + len, &len);
-    // plen += len;
-    // dmsg[plen] = '\0';
-
-    // dump << dmsg << std::endl;
 }
 
 int main(int argc, char *argv[])
