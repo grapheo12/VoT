@@ -2,6 +2,16 @@
     "ipcPath": "../privnet/node1/geth.ipc",
     "casterContract": "0x667457eD29309862C5206Bd7d25F3116010eB334",
     "n_candidates": 5,
+    "blacklist": [
+        "QmazxgGYCLQeU7AdYj2uNVs793ALyPGCVsHKrbaWCXvM7C",
+        "QmNpq88HskD8XWGmWQ82opu3ZFMN8enehtPtBNWXSvcGhi",
+        "QmU7eZZtygkYTedhZrM5ASTh5gJEpnQBEHFKr7nck2BzyS",
+        "QmcE8u3usjNqMYVyAwGaUCcwAbTJdvb3Uhvrb4vhBcSe1V",
+        "QmNoQb3RSzdWXazHFYrKQJf8dks1v7z5D8ydMSQu2GXHB9",
+        "QmfYZETjqHGDv5xRcKPNEae8BwmmCqx6HADGNZThefMBzJ",
+        "QmWqnM1mGSsfoK9NgyY6aM3NS9fiKfsDC9dDmrPPMd8WCt",
+        "QmWMdMAeGWX9wvq3hLs44VoPLsA68YkiN9LN4DN5qvqY4B"
+    ],
     "casterAbi": [
         {
             "inputs": [

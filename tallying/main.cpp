@@ -9,7 +9,7 @@
 #include <chrono>
 
 #define MAX_HW_WIDTH 5
-#define MAX_ACC_WIDTH 16
+#define MAX_ACC_WIDTH 5
 
 namespace chr = std::chrono;
 
@@ -45,15 +45,20 @@ struct Accumulator{
         // Add single bit to WIDTH sized accumulator
         LweSample *carry = new_LweSample(params);
         pk->Encrypt(carry, 0);
+        carry->current_variance = 0.0001;
+        LweSample *dummy = new_LweSample(params);
 
+        LweSample *res = new_LweSample(params);
+        LweSample *res2 = new_LweSample(params);
         for (int i = WIDTH-1; i >= 0; i--){
-            LweSample *res = new_LweSample(params);
-            LweSample *res2 = new_LweSample(params);
+            lweClear(res, params);
+            lweClear(res2, params);
 
             if (i == WIDTH-1){
                 // Don't worry about carry here
                 // It will always be zero.
                 bootsXOR(res, c[i], bit, bk);
+                // lweCopy(res, dummy, params);
                 bootsAND(res2, c[i], bit, bk);
             }else{
                 bootsXOR(res, c[i], carry, bk);
@@ -62,11 +67,10 @@ struct Accumulator{
 
             lweCopy(carry, res2, params);
             lweCopy(c[i], res, params);
-
-            free_LweSample(res);
-            free_LweSample(res2);
-
         }
+        delete_LweSample(res);
+        delete_LweSample(res2);
+
         auto end = chr::high_resolution_clock::now();
         auto duration = chr::duration_cast<chr::milliseconds>(end - start);
 
@@ -148,26 +152,26 @@ std::vector<LweSample *>* parseVote(std::string path, ThFHEPubKey *pk, TFheGateB
 
     auto start = chr::high_resolution_clock::now();
     // Hamming Weight
-    // auto hw = new Accumulator<MAX_HW_WIDTH>(pk, bk, params->in_out_params);
-    // for (int i = 0; i < arr->size(); i++){
-    //     auto x = (*arr)[i];
-    //     hw->AddBit(x);
-    // }
+    auto hw = new Accumulator<MAX_HW_WIDTH>(pk, bk, params->in_out_params);
+    for (int i = 0; i < arr->size(); i++){
+        auto x = (*arr)[i];
+        hw->AddBit(x);
+    }
     
-    // auto cmp = hw->Compare(1);
+    auto cmp = hw->Compare(1);
 
-    // for (int i = 0; i < arr->size(); i++){
-    //     auto x = (*arr)[i];
+    for (int i = 0; i < arr->size(); i++){
+        auto x = (*arr)[i];
 
-    //     LweSample *res = new_LweSample(params->in_out_params);
-    //     LweSample *zero = new_LweSample(params->in_out_params);
-    //     pk->Encrypt(zero, 0);
-    //     bootsMUX(res, cmp, x, zero, bk);
-    //     lweCopy((*arr)[i], res, params->in_out_params);
-    //     free_LweSample(res);
-    //     free_LweSample(zero);
+        LweSample *res = new_LweSample(params->in_out_params);
+        LweSample *zero = new_LweSample(params->in_out_params);
+        pk->Encrypt(zero, 0);
+        bootsMUX(res, cmp, x, zero, bk);
+        lweCopy((*arr)[i], res, params->in_out_params);
+        free_LweSample(res);
+        free_LweSample(zero);
 
-    // }
+    }
 
     auto end = chr::high_resolution_clock::now();
     auto duration = chr::duration_cast<chr::milliseconds>(end - start);

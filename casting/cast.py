@@ -31,7 +31,7 @@ if __name__ == "__main__":
     out, _ = p.communicate()
     hsh = uploadToIPFS(out)
 
-    print("Uploaded to IPFS")
+    print("Uploaded to IPFS:", hsh)
 
     ac = w3.eth.account.from_key(argv[3])
     nonce = w3.eth.get_transaction_count(ac.address)

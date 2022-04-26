@@ -52,7 +52,10 @@ def filterDump(cid, content):
 
 if __name__ == "__main__":
     cids = getAllCids()
+    blacklist = set(config["blacklist"])
     for cid in cids:
+        if cid in blacklist:
+            continue
         content = getFromIPFS(cid)
         n_candidates = int(content.decode().split("\n")[0].strip())
         print(cid, n_candidates)
