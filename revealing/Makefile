@@ -3,7 +3,7 @@ TFHE_OPTIONS = C_INCLUDE_PATH=$$C_INCLUDE_PATH:${TFHE_PREFIX}/include CPLUS_INCL
 TFHE_LIB = -ltfhe-spqlios-fma
 BLAS_LIB = -lopenblas
 
-all: bin/revealShare bin/partialDecrypt
+all: bin/revealShare bin/partialDecrypt bin/finalDecrypt
 
 
 bin/revealShare: revealShare.cpp
@@ -11,8 +11,18 @@ bin/revealShare: revealShare.cpp
 	mkdir -p keys
 	${TFHE_OPTIONS} g++ -g revealShare.cpp -o bin/revealShare -lthfhe -lcrypto -lssl ${TFHE_LIB} ${BLAS_LIB}
 
-bin/partialDecrypt: partialDecrypt.cpp
+bin/partialDecrypt: partialDecrypt.cpp common.hpp
+	mkdir -p bin
+	mkdir -p ciphers
 	${TFHE_OPTIONS} g++ -g partialDecrypt.cpp -o bin/partialDecrypt -lthfhe -lcrypto -lssl ${TFHE_LIB} ${BLAS_LIB}
+
+bin/finalDecrypt: finalDecrypt.cpp common.hpp
+	${TFHE_OPTIONS} g++ -g finalDecrypt.cpp -o bin/finalDecrypt -lthfhe -lcrypto -lssl ${TFHE_LIB} ${BLAS_LIB}
+
+
+.PHONY: refresh
+refresh:
+	rm -rf ciphers/*
 
 
 .PHONY: clean

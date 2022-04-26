@@ -6,8 +6,12 @@
 #include <thfhe.hpp>
 #include <tfhe/tfhe.h>
 #include <tfhe/tfhe_io.h>
+#include <chrono>
 
 #define MAX_HW_WIDTH 5
+#define MAX_ACC_WIDTH 16
+
+namespace chr = std::chrono;
 
 
 template <int WIDTH>
@@ -32,6 +36,7 @@ struct Accumulator{
 
     void AddBit(LweSample *bit)
     {
+        auto start = chr::high_resolution_clock::now();
         // Add single bit to WIDTH sized accumulator
         LweSample *carry = new_LweSample(params);
         pk->Encrypt(carry, 0);
@@ -57,6 +62,10 @@ struct Accumulator{
             free_LweSample(res2);
 
         }
+        auto end = chr::high_resolution_clock::now();
+        auto duration = chr::duration_cast<chr::milliseconds>(end - start);
+
+        std::cerr << "AddBit Time: " << duration.count() << "ms" << std::endl;
 
     }
 
@@ -132,6 +141,7 @@ std::vector<LweSample *>* parseVote(std::string path, ThFHEPubKey *pk, TFheGateB
 
     dump.close();
 
+    auto start = chr::high_resolution_clock::now();
     // Hamming Weight
     auto hw = new Accumulator<MAX_HW_WIDTH>(pk, bk, params->in_out_params);
     for (int i = 0; i < arr->size(); i++){
@@ -153,6 +163,10 @@ std::vector<LweSample *>* parseVote(std::string path, ThFHEPubKey *pk, TFheGateB
         free_LweSample(zero);
 
     }
+
+    auto end = chr::high_resolution_clock::now();
+    auto duration = chr::duration_cast<chr::milliseconds>(end - start);
+    std::cerr << "Vote parse time: " << duration.count() << "ms" << std::endl;
 
     return arr;
 }
@@ -198,17 +212,17 @@ int main(int argc, char *argv[])
     ThFHEPubKey *pk = new ThFHEPubKey(NULL, 0);
     importPK(std::string(argv[2]), pk);
 
-    Accumulator<32> **count = NULL;
+    Accumulator<MAX_ACC_WIDTH> **count = NULL;
     int cntLen = -1;
     
     std::string path(argv[1]);
     for (const auto& entry : std::filesystem::directory_iterator(path)){
         auto arr = parseVote(std::string(entry.path()), pk, bk);
         if (count == NULL){
-            count = new Accumulator<32>*[arr->size()];
+            count = new Accumulator<MAX_ACC_WIDTH>*[arr->size()];
             cntLen = arr->size();
             for (int i = 0; i < arr->size(); i++){
-                count[i] = new Accumulator<32>(pk, bk, params->in_out_params);
+                count[i] = new Accumulator<MAX_ACC_WIDTH>(pk, bk, params->in_out_params);
             }
         }
 
