@@ -53,4 +53,7 @@ def filterDump(cid, content):
 if __name__ == "__main__":
     cids = getAllCids()
     for cid in cids:
-        filterDump(cid, getFromIPFS(cid))
+        content = getFromIPFS(cid)
+        n_candidates = int(content.decode().split("\n")[0].strip())
+        print(cid, n_candidates)
+        filterDump(cid, content)
