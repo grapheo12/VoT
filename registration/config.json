@@ -1,6 +1,6 @@
 {
     "ipcPath": "../privnet/node0/geth.ipc",
-    "voterContract": "0x80c8cD353C18Ef498F93fFA552ab6737623Af237",
+    "voterContract": "0xA99f270C885574183f6894ed41358276360780bE",
     "voterAbi": [
         {
             "inputs": [

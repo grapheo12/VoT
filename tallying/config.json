@@ -1,6 +1,6 @@
 {
     "ipcPath": "../privnet/node1/geth.ipc",
-    "casterContract": "0x49b72a51D924aD503e67F005533CbD8f8908f5d6",
+    "casterContract": "0x667457eD29309862C5206Bd7d25F3116010eB334",
     "n_candidates": 5,
     "casterAbi": [
         {

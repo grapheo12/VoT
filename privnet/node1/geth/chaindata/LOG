@@ -94,3 +94,34 @@
 11:06:42.513029 db@open done T·746.473349ms
 12:23:39.549947 db@close closing
 12:23:39.552674 db@close done T·2.727388ms
+=============== Apr 26, 2022 (IST) ===============
+11:36:44.374766 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+11:36:44.375782 version@stat F·[3 1] S·42MiB[41MiB 63KiB] Sc·[0.75 0.00]
+11:36:44.375807 db@open opening
+11:36:44.375856 journal@recovery F·1
+11:36:44.382252 journal@recovery recovering @22
+11:36:44.465407 memdb@flush created L0@24 N·43806 S·2MiB "B\x00\x00..ն.,v1020201":"unc..own,v986134"
+11:36:44.470587 version@stat F·[4 1] S·44MiB[44MiB 63KiB] Sc·[1.00 0.00]
+11:36:44.483254 db@janitor F·7 G·0
+11:36:44.483294 db@open done T·107.468958ms
+11:36:44.483369 table@compaction L0·4 -> L1·1 S·44MiB Q·1029935
+11:36:44.567076 table@build created L1@27 N·72151 S·2MiB "\x00\x9b\xc4..\x8e\x13\xb2,v985799":"H\x86<..\x17\xeb\xcb,v919512"
+11:36:44.694426 table@build created L1@28 N·49187 S·2MiB "H\x86=..\xaeΐ,v183210":"b\x00\x00..0\xe5\x8d,v143602"
+11:36:44.735725 table@build created L1@29 N·52024 S·2MiB "b\x00\x00..\xa6Q\xb2,v143611":"b\x00\x00..N\xdd\xf2,v995827"
+11:36:44.785925 table@build created L1@30 N·31961 S·2MiB "b\x00\x00..<B!,v995836":"h\x00\x00..\xbb\xe6},v90023"
+11:36:44.831512 table@build created L1@31 N·30725 S·2MiB "h\x00\x00..\xe6}t,v90020":"h\x00\x00..\xf7k^,v186345"
+11:36:44.885219 table@build created L1@32 N·30709 S·2MiB "h\x00\x00..k^t,v186342":"h\x00\x00..\xfc\x9c\xe3,v284663"
+11:36:44.947006 table@build created L1@33 N·30635 S·2MiB "h\x00\x00..\x9c\xe3t,v284660":"h\x00\x00..\x00\x06@,v380715"
+11:36:44.996441 table@build created L1@34 N·30601 S·2MiB "h\x00\x00..\x06@t,v380712":"h\x00\x00..\xbf\x84\xd1,v478709"
+11:36:45.042262 table@build created L1@35 N·30599 S·2MiB "h\x00\x00..\x84\xd1t,v478706":"h\x00\x00..t\xd0@,v931120"
+11:36:45.090196 table@build created L1@36 N·30565 S·2MiB "h\x00\x00..\xd0@t,v931117":"h\x00\x00..\x15\xbbC,v1029674"
+11:36:45.139951 table@build created L1@37 N·53463 S·2MiB "h\x00\x00..\xbbCt,v1029671":"r\x00\x00..\x1d\"\x00,v868819"
+11:36:45.156361 table@build created L1@38 N·18433 S·775KiB "r\x00\x00..\xab\x9f\xbf,v868824":"\xff\xe6K..\x8c\xe6\xcd,v986075"
+11:36:45.156445 version@stat F·[0 12] S·24MiB[0B 24MiB] Sc·[0.00 0.24]
+11:36:45.160764 table@compaction committed F+7 S-20MiB Ke·0 D·568854 T·677.355019ms
+11:36:45.163221 table@remove removed @21
+11:36:45.166441 table@remove removed @18
+11:36:45.167257 table@remove removed @15
+11:36:45.167552 table@remove removed @14
+11:52:00.498662 db@close closing
+11:52:00.499204 db@close done T·543.16µs

@@ -139,3 +139,15 @@
 11:06:31.649791 db@open done T·607.410086ms
 12:23:33.925999 db@close closing
 12:23:33.926521 db@close done T·527.162µs
+=============== Apr 26, 2022 (IST) ===============
+11:36:29.061327 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+11:36:29.062319 version@stat F·[2 1] S·42MiB[41MiB 112KiB] Sc·[0.50 0.00]
+11:36:29.062348 db@open opening
+11:36:29.062399 journal@recovery F·1
+11:36:29.067788 journal@recovery recovering @32
+11:36:29.161468 memdb@flush created L0@34 N·43806 S·2MiB "B\x00\x00..ն.,v1020218":"unc..own,v986379"
+11:36:29.166388 version@stat F·[3 1] S·44MiB[44MiB 112KiB] Sc·[0.75 0.00]
+11:36:29.181007 db@janitor F·6 G·0
+11:36:29.181048 db@open done T·118.680068ms
+11:51:58.173199 db@close closing
+11:51:58.173494 db@close done T·1.016466ms
