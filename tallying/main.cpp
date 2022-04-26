@@ -7,8 +7,108 @@
 #include <tfhe/tfhe.h>
 #include <tfhe/tfhe_io.h>
 
+#define MAX_HW_WIDTH 5
 
-std::vector<LweSample *>* parseVote(std::string path)
+
+template <int WIDTH>
+struct Accumulator{
+    std::vector<LweSample *> c;
+    ThFHEPubKey *pk;
+    TFheGateBootstrappingCloudKeySet *bk;
+    LweParams *params;
+
+    Accumulator(ThFHEPubKey *_pk, TFheGateBootstrappingCloudKeySet *_bk, const LweParams *_params)
+    {
+        pk = _pk;
+        bk = _bk;
+        params = (LweParams *)_params;
+        // 0 -> MSB, WIDTH-1 -> LSB
+        for (int i = 0; i < WIDTH; i++){
+            LweSample *sample = new_LweSample(params);
+            pk->Encrypt(sample, 0);
+            c.push_back(sample);
+        }
+    }
+
+    void AddBit(LweSample *bit)
+    {
+        // Add single bit to WIDTH sized accumulator
+        LweSample *carry = new_LweSample(params);
+        pk->Encrypt(carry, 0);
+
+        for (int i = WIDTH-1; i >= 0; i--){
+            LweSample *res = new_LweSample(params);
+            LweSample *res2 = new_LweSample(params);
+
+            if (i == WIDTH-1){
+                // Don't worry about carry here
+                // It will always be zero.
+                bootsXOR(res, c[i], bit, bk);
+                bootsAND(res2, c[i], bit, bk);
+            }else{
+                bootsXOR(res, c[i], carry, bk);
+                bootsAND(res2, c[i], carry, bk);
+            }
+
+            lweCopy(carry, res2, params);
+            lweCopy(c[i], res, params);
+
+            free_LweSample(res);
+            free_LweSample(res2);
+
+        }
+
+    }
+
+    LweSample* Compare(int val)
+    {
+        LweSample *acc = new_LweSample(params);
+        LweSample *res = new_LweSample(params);
+        LweSample *res2 = new_LweSample(params);
+        LweSample *cbit = new_LweSample(params);
+        pk->Encrypt(acc, 1);
+
+        for (int i = WIDTH-1; i >= 0; i--){
+            lweClear(res, params);
+            lweClear(res2, params);
+            lweClear(cbit, params);
+
+            int bit = val & 1;
+            pk->Encrypt(cbit, bit);
+            val >>= 1;
+
+            bootsXNOR(res, c[i], cbit, bk);
+            bootsAND(res2, acc, res, bk);
+            lweCopy(acc, res2, params);
+        }
+        free_LweSample(cbit);
+        free_LweSample(res);
+        free_LweSample(res2);
+
+        return acc;
+    }
+
+    void Export(std::string path)
+    {
+        std::ofstream dump(path);
+        dump << WIDTH << std::endl;
+        dump << params->n << std::endl;
+        // MSB -> LSB
+        for (int i = 0; i < WIDTH; i++){
+            for (int j = 0; j < params->n; j++){
+                dump << c[i]->a[j] << " ";
+            }
+            dump << std::endl;
+
+            dump << c[i]->b << std::endl;
+            dump << c[i]->current_variance << std::endl;
+        }
+        dump.close();
+    }
+};
+
+
+std::vector<LweSample *>* parseVote(std::string path, ThFHEPubKey *pk, TFheGateBootstrappingCloudKeySet *bk)
 {
     std::ifstream dump(path);
     int len, pkN;
@@ -31,60 +131,97 @@ std::vector<LweSample *>* parseVote(std::string path)
     }
 
     dump.close();
+
+    // Hamming Weight
+    auto hw = new Accumulator<MAX_HW_WIDTH>(pk, bk, params->in_out_params);
+    for (int i = 0; i < arr->size(); i++){
+        auto x = (*arr)[i];
+        hw->AddBit(x);
+    }
+    
+    auto cmp = hw->Compare(1);
+
+    for (int i = 0; i < arr->size(); i++){
+        auto x = (*arr)[i];
+
+        LweSample *res = new_LweSample(params->in_out_params);
+        LweSample *zero = new_LweSample(params->in_out_params);
+        pk->Encrypt(zero, 0);
+        bootsMUX(res, cmp, x, zero, bk);
+        lweCopy((*arr)[i], res, params->in_out_params);
+        free_LweSample(res);
+        free_LweSample(zero);
+
+    }
+
     return arr;
 }
 
-void addVote(std::vector<LweSample *> *acc, std::vector<LweSample *> *vote, const LweParams *params, bool new_acc)
+
+void importPK(std::string fpath, ThFHEPubKey *key)
 {
-    // TODO: Actual Adder circuit
-    if (new_acc){
-        for (int i = 0; i < vote->size(); i++){
-            LweSample *sample = (*vote)[i];
-            LweSample *accSample = new_LweSample(params);
-            for (int j = 0; j < params->n; j++){
-                accSample->a[j] = sample->a[j];
-            }
-            accSample->b = sample->b;
-            accSample->current_variance = 1e-28;
-            acc->push_back(accSample);
+    std::ifstream src(fpath);
+    src >> key->n_samples >> key->n >> key->alpha;
+    key->samples = new LweSample*[key->n_samples];
+    auto mainParams = initialize_gate_bootstrapping_params();
+
+    for (int i = 0; i < key->n_samples; i++){
+        int tmp;
+        key->samples[i] = new_LweSample(mainParams->in_out_params);
+        for (int j = 0; j < key->n; j++){
+            src >> tmp;
+            key->samples[i]->a[j] = (Torus32)tmp;
         }
+        src >> tmp;
+        key->samples[i]->b = (Torus32)tmp;
+        src >> key->samples[i]->current_variance;
     }
+    src.close();
 }
+
+
 
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2){
-        std::cerr << "Usage: ./bin/main <path/to/voteDumps>" << std::endl;
+    if (argc != 5){
+        std::cerr << "Usage: ./bin/main <path/to/voteDumps> <path/to/pubkey> <path/to/bootstrappingKey> <path/to/output>" << std::endl;
         exit(0);
     }
 
     auto params = initialize_gate_bootstrapping_params();
-    std::vector<LweSample *> *accumulator = NULL;
-    
 
+    FILE *bkFp = fopen(argv[3], "rb");
+    auto bk = new_tfheGateBootstrappingCloudKeySet_fromFile(bkFp);
+    fclose(bkFp);
+    
+    ThFHEPubKey *pk = new ThFHEPubKey(NULL, 0);
+    importPK(std::string(argv[2]), pk);
+
+    Accumulator<32> **count = NULL;
+    int cntLen = -1;
+    
     std::string path(argv[1]);
     for (const auto& entry : std::filesystem::directory_iterator(path)){
-        auto arr = parseVote(std::string(entry.path()));
-        if (!accumulator){
-            accumulator = new std::vector<LweSample *>(0);
-            addVote(accumulator, arr, params->in_out_params, true);
-        }else{
-            addVote(accumulator, arr, params->in_out_params, false);
+        auto arr = parseVote(std::string(entry.path()), pk, bk);
+        if (count == NULL){
+            count = new Accumulator<32>*[arr->size()];
+            cntLen = arr->size();
+            for (int i = 0; i < arr->size(); i++){
+                count[i] = new Accumulator<32>(pk, bk, params->in_out_params);
+            }
+        }
+
+        for (int i = 0; i < arr->size(); i++){
+            count[i]->AddBit((*arr)[i]);
         }
     }
 
-    std::cout << accumulator->size() << std::endl;
-    std::cout << params->in_out_params->n << std::endl;
-
-    for (int i = 0; i < accumulator->size(); i++){
-        for (int j = 0; j < params->in_out_params->n; j++){
-            std::cout << (int)((*accumulator)[i]->a[j]) << " ";
-        }
-        std::cout << std::endl;
-        std::cout << (int)((*accumulator)[i]->b) << std::endl;
+    char name[1000];
+    for (int i = 0; i < cntLen; i++){
+        sprintf(name, "%s/result%d.vote", argv[4], i + 1);
+        count[i]->Export(std::string(name));
     }
 
-    
     return 0;
 }

@@ -13,6 +13,7 @@ ipfs/compose/
 # privnet/node*/geth/
 tallying/dump/
 tallying/result.vote
+tallying/results/
 revealing/keys/
 revealing/ciphers/
 

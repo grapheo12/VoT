@@ -11,5 +11,10 @@ dump:
 
 bin/main: main.cpp
 	mkdir -p bin
+	mkdir -p results
 	${TFHE_OPTIONS} g++ -g main.cpp -o bin/main -lthfhe -lcrypto -lssl ${TFHE_LIB} ${BLAS_LIB}
 
+
+.PHONY: clean
+clean:
+	rm -rf bin dump results *.vote
