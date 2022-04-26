@@ -176,31 +176,15 @@ int main(int argc, char *argv[])
 
     exportPK("keys/pk.key", genKey->pk);
 
-    // auto params = initialize_gate_bootstrapping_params();
-    // auto tparams = new_TLweParams(params->in_out_params->n, 1, params->in_out_params->alpha_min, params->in_out_params->alpha_max);
-    
-    // int bit = 0;
-    // auto lweCipher = new_LweSample(params->in_out_params);
-    // genKey->pk->Encrypt(lweCipher, bit);
-    // auto cipher = new_TLweSample(tparams);
-    // TLweFromLwe(cipher, lweCipher, tparams);
-
-    // TorusPolynomial *part[2];
-    // part[0] = new_TorusPolynomial(params->in_out_params->n);
-    // part[1] = new_TorusPolynomial(params->in_out_params->n);
-
-    // shares[0].PartialDecrypt(cipher, tparams, part[0], {1, 2}, 2, 3, 0);
-    // shares[1].PartialDecrypt(cipher, tparams, part[1], {1, 2}, 2, 3, 0);
-
-    // int result = 0;
-    // result = finalDecrypt(cipher, part, tparams, {1, 2}, 2, 3);
-    // std::cout << result << std::endl;
-
     char name[1000];
     for (int i = 1; i <= T; i++){
         sprintf(name, "keys/share%d.json", i);
         exportTimeLockPuzzle(&shares[i-1], 10, name);
     }
+
+    FILE *fp = fopen("keys/bk.key", "wb");
+    export_tfheGateBootstrappingCloudKeySet_toFile(fp, genKey->bk);
+    fclose(fp);
 
     return 0;
 }
