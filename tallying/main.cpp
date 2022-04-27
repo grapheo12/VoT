@@ -58,6 +58,11 @@ struct Accumulator{
             lweClear(res2, params);
 
             if (i == WIDTH-1){
+
+                /*
+                    0000 1
+                       1 1
+                */
                 // Don't worry about carry here
                 // It will always be zero.
                 bootsXOR(res, c[i], bit, bk);
