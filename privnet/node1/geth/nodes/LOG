@@ -214,3 +214,37 @@
 22:58:27.470916 table@remove removed @47
 23:15:24.793001 db@close closing
 23:15:24.797526 db@close done T·4.547177ms
+=============== Apr 27, 2022 (IST) ===============
+10:36:03.172316 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+10:36:03.172419 version@stat F·[0 1] S·163KiB[0B 163KiB] Sc·[0.00 0.00]
+10:36:03.172436 db@open opening
+10:36:03.172471 journal@recovery F·1
+10:36:03.173037 journal@recovery recovering @49
+10:36:03.179603 memdb@flush created L0@52 N·3466 S·66KiB "loc..seq,v179389":"n:\xf6..ong,v180254"
+10:36:03.180472 version@stat F·[1 1] S·230KiB[66KiB 163KiB] Sc·[0.25 0.00]
+10:36:03.191706 db@janitor F·5 G·1
+10:36:03.191724 db@janitor removing table-48
+10:36:03.191801 db@open done T·19.356448ms
+10:36:11.318147 table@compaction L0·1 -> L1·1 S·230KiB Q·182835
+10:36:11.331276 table@build created L1@55 N·4225 S·175KiB "loc..seq,v179389":"version,v1"
+10:36:11.331333 version@stat F·[0 1] S·175KiB[0B 175KiB] Sc·[0.00 0.00]
+10:36:11.335412 table@compaction committed F-1 S-54KiB Ke·0 D·3126 T·17.233314ms
+10:36:11.335523 table@remove removed @51
+11:50:01.948424 memdb@flush N·34084 S·3MiB
+11:50:01.973216 memdb@flush created L0@57 N·34084 S·518KiB "loc..seq,v209474":"n:\xff..ong,d211338"
+11:50:01.973262 version@stat F·[1 1] S·693KiB[518KiB 175KiB] Sc·[0.25 0.00]
+11:50:01.976523 memdb@flush committed F·1 T·20.851993ms
+11:50:01.977065 journal@remove removed @53
+11:54:37.880090 table@compaction L0·1 -> L1·1 S·693KiB Q·218756
+11:54:37.953423 table@build created L1@58 N·4665 S·194KiB "loc..seq,v209474":"version,v1"
+11:54:37.953517 version@stat F·[0 1] S·194KiB[0B 194KiB] Sc·[0.00 0.00]
+11:54:37.957018 table@compaction committed F-1 S-499KiB Ke·0 D·33644 T·76.811531ms
+11:54:37.957290 table@remove removed @57
+11:54:37.957418 table@remove removed @55
+12:46:03.312645 memdb@flush N·33040 S·3MiB
+12:46:03.335940 memdb@flush created L0@60 N·33040 S·502KiB "loc..seq,v249690":"n:\xff..ong,v220425"
+12:46:03.335981 version@stat F·[1 1] S·696KiB[502KiB 194KiB] Sc·[0.25 0.00]
+12:46:03.339269 memdb@flush committed F·1 T·26.281644ms
+12:46:03.339537 journal@remove removed @56
+12:48:52.269987 db@close closing
+12:48:52.270172 db@close done T·183.554µs

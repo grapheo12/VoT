@@ -3,13 +3,16 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
+#include <deque>
 #include <thfhe.hpp>
 #include <tfhe/tfhe.h>
 #include <tfhe/tfhe_io.h>
 #include <chrono>
+#include <omp.h>
 
 #define MAX_HW_WIDTH 5
-#define MAX_ACC_WIDTH 5
+#define MAX_ACC_WIDTH 16
+#define __SZ 4
 
 namespace chr = std::chrono;
 
@@ -123,7 +126,34 @@ struct Accumulator{
         }
         dump.close();
     }
+
+    Accumulator<WIDTH>& operator+=(const Accumulator<WIDTH>& other)
+    {
+        LweSample *carry = new_LweSample(params);
+        pk->Encrypt(carry, 0);
+        LweSample *halfadd = new_LweSample(params);
+        LweSample *halfcarry1 = new_LweSample(params);
+        LweSample *halfcarry2 = new_LweSample(params);
+
+        for (int i = WIDTH - 1; i >= 0; i--){
+            lweClear(halfadd, params);
+            lweClear(halfcarry1, params);
+            lweClear(halfcarry2, params);
+
+            bootsXOR(halfadd, this->c[i], other.c[i], bk);
+            bootsAND(halfcarry1, this->c[i], other.c[i], bk);
+
+            bootsXOR(this->c[i], carry, halfadd, bk);
+            bootsAND(halfcarry2, halfadd, carry, bk);
+
+            bootsOR(carry, halfcarry1, halfcarry2, bk);
+        }
+
+        return *this;
+    }
 };
+
+
 
 
 std::vector<LweSample *>* parseVote(std::string path, ThFHEPubKey *pk, TFheGateBootstrappingCloudKeySet *bk)
@@ -181,6 +211,88 @@ std::vector<LweSample *>* parseVote(std::string path, ThFHEPubKey *pk, TFheGateB
 }
 
 
+// Defunct now.
+template<int WIDTH>
+struct VoteArray{
+    std::vector<LweSample *> arr;
+    ThFHEPubKey *pk;
+    TFheGateBootstrappingCloudKeySet *bk;
+    LweParams *params;
+
+    VoteArray(ThFHEPubKey *_pk, TFheGateBootstrappingCloudKeySet *_bk, const LweParams *_params)
+    {
+        pk = _pk;
+        bk = _bk;
+        params = (LweParams*)_params;
+    }
+
+    void AddBit(LweSample *b)
+    {
+        arr.push_back(b);
+    }
+
+    Accumulator<WIDTH>* Add()
+    {
+        std::deque<Accumulator<WIDTH>*> q;
+
+        int n = arr.size() / __SZ;
+        if (arr.size() % __SZ > 0) n++;
+
+        #pragma omp parallel for num_threads(4)
+        for (int i = 0; i < n; i++){
+            int start = i * __SZ;
+            int end = start + __SZ - 1;
+            if (end > arr.size() - 1) end = arr.size() - 1;
+
+            Accumulator<WIDTH> *acc = new Accumulator<WIDTH>(pk, bk, params);
+            for (int j = start; j <= end; j++){
+                acc->AddBit(arr[i]);
+            }
+
+            #pragma omp critical
+            {
+                q.push_back(acc);
+            }
+        }
+
+        std::cout << "Vec Size: " << q.size() << std::endl;
+
+
+        while (q.size() > 1){
+            int vec_sz = q.size();
+            std::cout << "Vec Size: " << vec_sz << std::endl;
+
+            int n = vec_sz / __SZ;
+            if (vec_sz % __SZ > 0) n++;
+
+            #pragma omp parallel for num_threads(4)
+            for (int i = 0; i < n; i++){
+                int start = i * __SZ;
+                int end = start + __SZ - 1;
+
+                Accumulator<WIDTH> *ans = new Accumulator<WIDTH>(pk, bk, params);
+                for (int j = start; j <= end; j++){
+                    Accumulator<WIDTH> *tmp = q[j];
+                    (*ans) += (*tmp);
+                }
+
+                #pragma omp critical
+                {
+                    q.push_back(ans);
+                }
+            }
+
+            while (vec_sz > 0){
+                q.pop_front();
+                vec_sz--;
+            }
+        }
+
+        return q.front();
+    }
+};
+
+
 void importPK(std::string fpath, ThFHEPubKey *key)
 {
     std::ifstream src(fpath);
@@ -203,8 +315,6 @@ void importPK(std::string fpath, ThFHEPubKey *key)
 }
 
 
-
-
 int main(int argc, char *argv[])
 {
     if (argc != 5){
@@ -223,6 +333,7 @@ int main(int argc, char *argv[])
 
     Accumulator<MAX_ACC_WIDTH> **count = NULL;
     int cntLen = -1;
+    std::vector<LweSample*> *__acc = NULL;
     
     std::string path(argv[1]);
     for (const auto& entry : std::filesystem::directory_iterator(path)){
@@ -233,10 +344,19 @@ int main(int argc, char *argv[])
             for (int i = 0; i < arr->size(); i++){
                 count[i] = new Accumulator<MAX_ACC_WIDTH>(pk, bk, params->in_out_params);
             }
+
+            __acc = new std::vector<LweSample *>[arr->size()];
         }
 
         for (int i = 0; i < arr->size(); i++){
-            count[i]->AddBit((*arr)[i]);
+            __acc[i].push_back((*arr)[i]);
+        }
+    }
+
+    #pragma omp parallel for num_threads(8)
+    for (int i = 0; i < cntLen; i++){
+        for (auto x: __acc[i]){
+            count[i]->AddBit(x);
         }
     }
 
